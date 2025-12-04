@@ -34,6 +34,7 @@ class TinyTransformerBlock(nn.Module):
             in_axes=1,
             out_axes=1,
             variable_broadcast={"params": True},
+            variable_axes={"intermediates": 1},
             split_rngs={"params": False},
         )(
             hidden_dim=self.hidden_dim,

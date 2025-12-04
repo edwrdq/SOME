@@ -13,6 +13,9 @@ class SOMEBlock(nn.Module):
     @nn.compact
     def __call__(self, h):
         weights = Router(self.num_experts)(h)
+        # Sow router weights to the 'intermediates' collection for introspection/logging
+        # Shape: (batch, num_experts)
+        self.sow('intermediates', 'router_weights', weights)
         mask = weights > self.tau
         masked = weights * mask
         denom = jnp.sum(masked, axis=-1, keepdims=True)

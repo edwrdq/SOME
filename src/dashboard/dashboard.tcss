@@ -1,0 +1,56 @@
+/* Gruvbox ("gruxbov") dark, medium contrast with red accents */
+
+/* Base palette (gruvbox dark medium):
+   bg0: #282828, bg0_soft: #32302f, bg1: #3c3836, fg: #ebdbb2
+   red (accent): #cc241d (normal) / #fb4934 (bright)
+*/
+
+Screen {
+  background: #282828;   /* bg0 */
+  color: #ebdbb2;        /* fg */
+}
+
+#root {
+  height: 100%;
+}
+
+#top {
+  height: 65%;
+}
+
+#heatmap {
+  width: 70%;
+  background: #32302f;   /* bg0_soft */
+  border: round #3c3836;  /* subtle border */
+  padding: 1 2;
+  overflow: auto;
+  text-style: bold;
+}
+
+#usage {
+  width: 30%;
+  background: #32302f;
+  border: round #3c3836;
+  padding: 1 2;
+  overflow: auto;
+  color: #fb4934;        /* red accent for usage bars */
+}
+
+#inspector {
+  height: 35%;
+  background: #3c3836;   /* bg1 slightly lighter for separation */
+  border: round #cc241d;  /* red-accent border */
+  padding: 1 2;
+  overflow: auto;
+}
+
+Header {
+  background: #1d2021;   /* bg0_hard */
+  color: #fb4934;        /* bright red accent in header */
+  text-style: bold;
+}
+
+Footer {
+  background: #1d2021;
+  color: #d5c4a1;        /* softer fg */
+}
