@@ -12,22 +12,21 @@ class SOMEBlock(nn.Module):
 
     @nn.compact
     def __call__(self, h):
-        # 1. Router chooses experts
         weights = Router(self.num_experts)(h)
-
-        # 2. Threshold
         mask = weights > self.tau
-        masked_weights = weights * mask
+        masked = weights * mask
+        denom = jnp.sum(masked, axis=-1, keepdims=True)
+        safe_denom = jnp.where(denom > 0.0, denom, 1.0)
+        weights_renorm = jnp.where(denom > 0.0, masked / safe_denom, masked)
 
-        # 3. Apply the active experts
-        outputs = []
-        for i in range(self.num_experts):
-            if mask[i]:
-                out = Expert(self.hidden_dim, self.expert_dim)(h)
-                outputs.append(masked_weights[i] * out)
-
-        # 4. Combine
-        if outputs:
-            return sum(outputs)
-        else:
-            return jnp.zeros_like(h)
+        Experts = nn.vmap(
+            Expert,
+            variable_axes={"params": 0},
+            split_rngs={"params": True},
+            in_axes=None,
+            out_axes=1,
+            axis_size=self.num_experts,
+        )
+        expert_outs = Experts(self.hidden_dim, self.expert_dim)(h)
+        y = jnp.einsum("be,bed->bd", weights_renorm, expert_outs)
+        return y
